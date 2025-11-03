@@ -12,6 +12,7 @@ open class Inzenjer (
     val ekspertize: Set<String>
 ) : Osoba {
     //init blok se izvrsava pri kreiranju instance klase i validira podatke
+    //*koristen AI alat za pojasnjenje nacina validacija  podataka tj. upotrebe odgovarajuce funkcije
     init {
         require(ime.isNotBlank()) { "Ime ne smije biti prazno!" }
         require(prezime.isNotBlank()) { "Prezime ne smije biti prazno!" }
@@ -97,6 +98,8 @@ fun ispisiInzenjere(inzenjeri: List<Inzenjer>) {
         println("")
     }
 }
+
+//*koristen AI alat za pojasnjenje i bolje razumijevanje koncepata fold, reduce i aggregate
 //grupisanje inzenjera sa vise od 5god. iskustva po ekspertizama
 fun grupisiPoEkspertizi(inzenjeri: List<Inzenjer>): Map<String, List<Inzenjer>> {
     val iskusni = inzenjeri.filter { it.iskustvo > 5 }
@@ -144,6 +147,7 @@ fun ukupnoProjekataICertifikata(inzenjeri: List<Inzenjer>): Int {
 fun main() {
 
     //lista instanci inzenjera oba tipa
+    //*koristen AI alat za generisanje podataka
     val inzenjeri: List<Inzenjer> = listOf(
         SoftverskiInzenjer("Amina", "Ibrahimovic",  8, setOf("Kotlin", "Android", "CI/CD"), 15),
         SoftverskiInzenjer("Marko", "Petrovic", 3, setOf("Java", "Spring", "SQL"), 5),
@@ -154,8 +158,8 @@ fun main() {
     )
 
 //    nepravilno instanciranje objekta rezultira IllegalArgumentException-om uz odgovarajucu poruku
-//    val  inzenjer =
-//         SoftverskiInzenjer("", "Petrovic", 5, setOf("Java"), 2)
+//        val  inzenjer =
+//        SoftverskiInzenjer("", "Petrovic", 5, setOf("Java"), 2)
 //         SoftverskiInzenjer("Marko", "", 5, setOf("Java"), 2)
 //         SoftverskiInzenjer("Marko", "Petrovic", -1, setOf("Java"), 2)
 //         SoftverskiInzenjer("Marko", "Petrovic", 5, emptySet(), 2) },
@@ -163,6 +167,8 @@ fun main() {
 //         InzenjerElektrotehnike("Ivan", "Novak", 5, emptySet(), 2)
 //         InzenjerElektrotehnike("Ivan", "Novak", 5, setOf("C"), -1)
 
+
+    //*koristen AI alat za pregledniji prikaz rezultata npr.generisao --- uz naslov
     //implementirane funkcionalnosti:
 
     ispisiInzenjere(inzenjeri)
@@ -188,6 +194,7 @@ fun main() {
 
     println("\n--- Provjere ispravnosti ---")
     //poredim rezultate implementiranih funkcija sa rezultatima dobijenim na "direktan" nacin, bez fold,reduce i aggregate
+    //*koristen AI alat za prijedlog funkcija potrebnih za direktan izracun
     var najiskusnijiOK = true
     for ((tip, dobijeni) in najiskusniji) {
         val listaPoTipu= inzenjeri.filter { it.getTitula() == tip }
