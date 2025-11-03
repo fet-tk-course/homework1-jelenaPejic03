@@ -56,6 +56,7 @@ otvoriti u IntelliJ IDEA ili drugom Kotlin IDE-u.
 Rezultati će biti prikazani u konzoli.
 
 Konzolni ispis:
+```
 --- Popis svih inženjera ---
 - Softverski inzenjer -
 Ime i prezime:Amina Ibrahimovic
@@ -129,7 +130,7 @@ Ukupno projekata i certifikata: ocekivano = 56, dobijeno = 56 -> PASS
 Svi u fold grupi imaju >5 godina iskustva: true
 
 Rezime provjera: SVE PROLAZE (PASS)
-
+```
 
 AI alati koristeni za:
 pojašnjenje Kotlin koncepata (fold, reduce, aggregate), 
