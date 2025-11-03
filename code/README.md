@@ -1,34 +1,45 @@
-1B - Inzenjeri i ekspertize
+# 1B - Inzenjeri i ekspertize
 
-Kratko objasnjenje programa:
+## Kratko objasnjenje programa:
+
 Program modeluje hijerarhiju inzenjera, zajednicke i specificne osobine i ponasanja kroz klase, nasljedjivanje i polimorfizam uz validaciju svih polja. Za rad sa podacima tj. razlicitim tipovima inzenjera implementirane su funkcionalnosti grupisanja, filtriranja i agregacije. 
 
-Struktura klasa i odnosi:
-interface Osoba 
+---
+
+## Struktura klasa i odnosi:
+
+### interface Osoba 
 - osnovno ponasanje svih osoba u sistemu, minimalan identitet osobe
 - definise metode: identitet() i getTitula()
 - omogućava da se bilo koji tip osobe (ne samo Inzenjer) moze koristiti na isti nacin
 
-open class Inzenjer : Osoba
+### open class Inzenjer : Osoba
 - bazna(super) klasa koja implementira Osoba interfejs i sadrzi zajednicka svojstva i validacije za sve inzenjere
 - zajednicki, osnovni podaci tj. polja su ime, prezime, titula, godine iskustva i skup ekspertiza, a metod osnovneInfo() formira tekstualni prikaz osnovnih podataka (ima oznaku open kako bi ga izvedene klase mogle override-ati)
  
-class SoftverskiInzenjer : Inzenjer, class InzenjerElektrotehnike : inzenjer
+### class SoftverskiInzenjer : Inzenjer, class InzenjerElektrotehnike : Inzenjer
 - izvedene klase koje nasljedjuju od klase Inzenjer, dodaju specificna polja, validacije i metode i predefinisu zajednicki metod zbog svojih specificnih karakteristika
 - dodatni atribut za Softverskog inzenjera je broj projekata na kojim je radio, a dodatni
 metod rangUspjesnosti() ocjenjuje uspješnost na osnovu iskustva i projekata
 - InzenjerElektrotehnike dodatno ima polje za broj certifikata koje posjeduje i metod kvalifikovanZaVisokSlozenZadatak() kojim se procjenjuje spremnost za slozen problem
+  
+---
 
--> Osoba je apstrakcija-> Inzenjer implementira Osoba -> Svaki SoftverskiInzenjer i svaki InzenjerElektrotehnike je i Inzenjer
+### -> Osoba je apstrakcija-> Inzenjer implementira Osoba -> Svaki SoftverskiInzenjer i svaki InzenjerElektrotehnike je i Inzenjer
 
-Validacija i sigurnost podataka:
+---
+
+## Validacija i sigurnost podataka:
+
 Vrijednosti atributa validiraju se u sklopu primarnog konstruktora tj. unutar init bloka pomocu funkcije require().
 Funkcija uzima boolean izraz (predstavlja neko pravilo/uslov) koji mora biti zadovoljen kako bi se objekat uspjesno kreirao. Opcionalno se moze navesti i drugi argument koji predstavlja poruku koja ce biti uključena u IllegalArgumentException ako uvjet nije evaluiran kao tacan.
 Primjer ispisa u konzoli nakon neuspjele validacije:
 Exception in thread "main" java.lang.IllegalArgumentException: Ime ne smije biti prazno!
 Exception in thread "main" java.lang.IllegalArgumentException: Broj godina iskustva mora biti veci (ili jednak) 0!
 
-Funkcionalne operacije i njihova upotreba u kodu:
+---
+
+## Funkcionalne operacije i njihova upotreba u kodu:
 Fold funkcija koristena je pri implementaciji funkcionalnosti za grupisanje inzenjera po ekspertizama. Fold prolazi kroz sve elemente kolekcije i koristeci lambda funkciju akumulira novu vrijednost - akumulator, sve dok ne dodje do kraja kada ce on predstavljati rezultat. 
 Pocetna vrijednost akumulatora se obavezno prosljedjuje kao argument.
 Konkretno u funkciji grupisiPoEkspertizi() akumulator je tipa MutableMap<String, MutableList<Inzenjer>>, a njegova inicijalna vrijednost je prazna mapa. Tokom folda, prolazeci kroz sve inzenjere i sve njihove ekspertize, mapa se puni kljucevima-ekspertizama i vrijednostima-lista inženjera sa tom ekspertizom.Na kraju, fold vraća konačnu akumuliranu mapu:ekspertiza → lista inženjera sa tim iskustvom.
@@ -37,7 +48,9 @@ Reduce funkcija koristena je unutar funkcionalnosti za odredjivanje najiskusnije
 
 Aggregate funkcija koristena je za izracunavanje ukupnog broja projekata svih softverskih inzenjera i certifikata svih elektrotehnickih inzenjera. Aggregate radi na Grouping<K, T> objektu, prolazi kroz sve elemente svake grupe i akumulira vrijednost za svaku grupu odrzavajući akumulator koji se azurira po elementu. Moja funkcija ukupnoProjekataICertifikata() grupise inzenjere po tituli sa groupingBy{}, a zatim aggregate prolazi kroz svaku grupu -> odredjuje vrijednost za akumuliranje na osnovu tipa inzenjera -> ako je element prvi u grupi, akumulator se postavlja na trentnu vrijednost za akumuliranje, za sve ostale elemente, akumulator se ažurira zbrajanjem. Rezultat je mapa gdje je ključ titula, a vrijednost je zbir projekata ili certifikata. 
 
-Poređenje fold, reduce, i aggregate:
+---
+
+## Poređenje fold, reduce, i aggregate:
 fold -> akumulira vrijednost pocevsi od eksplicitno zadate pocetne vrijednosti koja moze biti bilo kojeg tipa i vraca rezultat tog tipa
 prednosti: eksplicitna vrijednost init - sigurnije za prazne kolekcije, fleksibilan povratni tip, moze se koristiti za popunjavanje mape, liste, kombinovanje elemenata...
 mane: rucno zadavanje init vrijednosti, sporo
@@ -49,13 +62,18 @@ aggregate -> koristi se nad grupisanim kolekcijama, akumulira vrijednost po grup
 prednosti: tipicna primjena za zbir, prosjek ili druge statisticke agregacije po grupama, fleksibilan povratni tip
 mane: slozenija funkcija, radi samo na grupisanim kolekcijama
 
-Pokretanje programa:
+---
+
+## Pokretanje programa:
+
 Folder 1B predtavlja projekat koji je potrebno 
 otvoriti u IntelliJ IDEA ili drugom Kotlin IDE-u.
 1b/src/Main.kt je fajl koji je potrebno pokrenuti.
 Rezultati će biti prikazani u konzoli.
 
-Konzolni ispis:
+---
+
+## Konzolni ispis:
 ```
 --- Popis svih inženjera ---
 - Softverski inzenjer -
@@ -131,8 +149,9 @@ Svi u fold grupi imaju >5 godina iskustva: true
 
 Rezime provjera: SVE PROLAZE (PASS)
 ```
+---
 
-AI alati koristeni za:
-pojašnjenje Kotlin koncepata (fold, reduce, aggregate), 
+## AI alati
+Koristeni za pojasnjenje Kotlin koncepata (fold, reduce, aggregate), 
 pojasnjenje kako izvrsiti validaciju podataka (funkcija require),
 formatiranje ispisa i generisanje testnih vrijednosti.
