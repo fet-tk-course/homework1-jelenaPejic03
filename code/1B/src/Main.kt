@@ -45,11 +45,11 @@ class SoftverskiInzenjer(
 
     //dodatna metoda za ovaj tip inzenjera ->izracun uspjesnosti na osnovu godina iskustva i odradjenih projekata
     fun rangUspjesnosti(): String {
-        val score = projekti * (1.0 + iskustvo / 10.0)
-        return when {
-            score < 10 -> "Niska"
-            score < 20 -> "Srednja"
-            else -> "Visoka"
+        val score = projekti * (1 + iskustvo / 10)
+        when  {
+            score < 10 -> return "Niska"
+            score < 20 -> return "Srednja"
+            else -> return "Visoka"
         }
     }
     //override metode iz roditeljske klase jer je neophodno dodati specificne info
@@ -112,7 +112,7 @@ fun grupisiPoEkspertizi(inzenjeri: List<Inzenjer>): Map<String, List<Inzenjer>> 
         }
         mapa
     }
-    return rezultat.mapValues { it.value.toList() } //value ne treba biti mutable radi sigurnosti
+    return rezultat //.mapValues { it.value.toList() } //value ne treba biti mutable radi sigurnosti
 }
 
 //izdvajanje najiskusnijeg od svih inzenjera istog tipa
@@ -120,17 +120,15 @@ fun najiskusnijiPoTipu(inzenjeri: List<Inzenjer>): Map<String, Inzenjer> {
     //mapiranje inzenjera po tituli
     val grupePoTituli: Map<String, List<Inzenjer>> = inzenjeri.groupBy { it.getTitula() }
 
-    val najiskusniji: Map<String, Inzenjer> = grupePoTituli.mapValues { (_, lista) ->
-        lista.reduce { a, b -> if (a.iskustvo >= b.iskustvo) a else b } //funkcija reduce "racuna" najiskusnijeg koristeci lambda funkciju
+    val najiskusniji: Map<String, Inzenjer> = grupePoTituli.mapValues { it.value.reduce { a, b -> if (a.iskustvo >= b.iskustvo) a else b } //funkcija reduce "racuna" najiskusnijeg koristeci lambda funkciju
     }
     return najiskusniji
 }
 
 //ukupan zbir rezultata iz razlicitih kategorija tj. zbir projekata i certifikata inzenjera razlicitog tipa -> agregacija po tituli
 fun ukupnoProjekataICertifikata(inzenjeri: List<Inzenjer>): Int {
-    val mapa = inzenjeri
-        .groupingBy { it.getTitula() }
-        .aggregate { _, acc: Int?, element, first -> //aggregate prolazi kroz sve elemente za svaki kljuc i akumulira novu vrijednost
+    val mapa = inzenjeri.groupingBy { it.getTitula() }
+        .aggregate { key, acc: Int?, element, first -> //aggregate prolazi kroz sve elemente za svaki kljuc i akumulira novu vrijednost
             val curr = when (element) {
                 is SoftverskiInzenjer -> element.projekti
                 is InzenjerElektrotehnike -> element.certifikati
@@ -141,6 +139,19 @@ fun ukupnoProjekataICertifikata(inzenjeri: List<Inzenjer>): Int {
         }
     val rez: Int = mapa.values.sumOf{ it }
     return rez
+}
+
+//PROVJERA
+fun expertiseExperienceIndex(inzenjeri: List<Inzenjer>) :Map<String, Int> {
+    val iskusni = inzenjeri.filter { it.iskustvo > 5 } //filtriraju se inzenjeri sa vise od 5god iskustva
+    val rezultat = iskusni.fold(mutableMapOf<String, Int>()) { mapa, inzenjer ->
+                for (ekspertiza in inzenjer.ekspertize) {
+                    mapa[ekspertiza] = mapa.getOrDefault(ekspertiza, 0) + inzenjer.iskustvo
+                } // za svaku ekspertizu trenutnog inzenjera se u mapu dodaje novi kljuc (ukoliko ne postoji) i azurira njegova vrijednost tako sto se dodaje broj
+                  // godina iskustva trenutnog inzenjera
+                mapa
+            }
+    return rezultat
 }
 
 //glavni tok
@@ -167,7 +178,6 @@ fun main() {
 //         InzenjerElektrotehnike("Ivan", "Novak", 5, emptySet(), 2)
 //         InzenjerElektrotehnike("Ivan", "Novak", 5, setOf("C"), -1)
 
-
     //*koristen AI alat za pregledniji prikaz rezultata npr.generisao --- uz naslov
     //implementirane funkcionalnosti:
 
@@ -190,7 +200,12 @@ fun main() {
     val total = ukupnoProjekataICertifikata(inzenjeri)
     println("\n--- Ukupno projekata i certifikata --- \n$total")
 
-
+    //PROVJERA
+    val sumaGodinaIskustvaPoEkspertizi = expertiseExperienceIndex(inzenjeri)
+    println("\n--- Ukupno iskustvo po ekspertizama (samo inzenjeri sa vise od 5god. iskustva) ---")
+    for ((ekspertiza, suma) in sumaGodinaIskustvaPoEkspertizi) {
+        println(" - $ekspertiza: $suma godina ukupno")
+    }
 
     println("\n--- Provjere ispravnosti ---")
     //poredim rezultate implementiranih funkcija sa rezultatima dobijenim na "direktan" nacin, bez fold,reduce i aggregate
