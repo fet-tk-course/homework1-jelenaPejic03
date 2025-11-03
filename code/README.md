@@ -153,5 +153,5 @@ Rezime provjera: SVE PROLAZE (PASS)
 
 ## AI alati
 Koristeni za pojasnjenje Kotlin koncepata (fold, reduce, aggregate), 
-pojasnjenje kako izvrsiti validaciju podataka (funkcija require),
-formatiranje ispisa i generisanje testnih vrijednosti.
+pojasnjenje kako izvrsiti validaciju podataka (funkcija require) i kako dobiti rjesenja na direktan nacin,
+za formatiranje ispisa i generisanje testnih vrijednosti.
